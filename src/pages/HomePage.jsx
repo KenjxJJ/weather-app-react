@@ -15,7 +15,7 @@ const HomePage = () => {
 
   return (
     <>
-      <main className="">
+      <main>
         <div className="d-flex flex-column">
           <section className="jumbotron">
             <p className="lead">Weekly Chart</p>
@@ -29,8 +29,16 @@ const HomePage = () => {
                   className="day-selected d-flex flex-column m-0 day-weather-data"
                   onClick={() => selectDay(index)}
                 >
-                  <img src={img} className="" alt="weather icon" />
-                  <span className="text-center font-weight-bold">
+                  <img
+                    key={`image${index}`}
+                    src={img}
+                    className=""
+                    alt="weather icon"
+                  />
+                  <span
+                    key={`day${index}`}
+                    className="text-center font-weight-bold"
+                  >
                     {day.charAt(0)}
                   </span>
                 </div>

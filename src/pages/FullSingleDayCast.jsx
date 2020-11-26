@@ -34,7 +34,7 @@ const FullSingleDayCast = (route) => {
       (wData) => wData.weather[0].id === parseInt(weatherIndex)
     );
     setSelectedDayData(selectedDayData);
-  }, []);
+  }, [data, weatherIndex]);
 
   //   Convert time(in milliseconds) to hh:mm
   const msToTime = (duration) => {
