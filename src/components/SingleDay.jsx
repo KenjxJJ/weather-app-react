@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 
 const SingleDay = () => {
   const { data } = useContext(WeatherContext);
-  const { main, wind, day } = data;
+  const { main, wind, day, weather } = data[0];
 
   const img = `http://openweathermap.org/img/wn/10d@2x.png`;
 
@@ -49,7 +49,7 @@ const SingleDay = () => {
           </small>
         </section>
       </div>
-      <Link to="/day/:id">
+      <Link to={`/day/${weather[0].id}`}>
         <Button className="mt-4">See Details</Button>
       </Link>
     </>

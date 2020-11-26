@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
 import SingleDay from "../components/SingleDay";
 
 import { WeatherContext } from "../context/WeatherContext";

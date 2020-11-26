@@ -21,6 +21,12 @@ a:hover {
 img {
   width: 87%;
 }
+.weather-icon {
+  width: 25% !important;
+}
+.weather-info-card{
+  background-color: aqua !important;
+}
 
 /* Footer  */
 /* .......................... */
