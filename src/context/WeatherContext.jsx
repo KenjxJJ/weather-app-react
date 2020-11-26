@@ -1,6 +1,7 @@
 import React, { createContext, useReducer } from "react";
 
 const weatherData = {
+  day: "Thursday",
   city: {
     id: 1283240,
     name: "Kathmandu",
@@ -32,9 +33,12 @@ const weatherData = {
 const dayReducer = (state, action) => {
   switch (action.type) {
     case "SELECT_DAY":
+      console.log({...state});
       const dayIndex = action.payload;
       const fullDay = daysOfTheWeek[dayIndex];
-      return fullDay;
+      return { ...state,
+              day: fullDay
+            };
 
       default:
       return state;

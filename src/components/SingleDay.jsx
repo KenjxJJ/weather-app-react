@@ -1,20 +1,35 @@
 import React, { useContext } from "react";
 import { WeatherContext } from "../context/WeatherContext";
+import { Button } from "reactstrap";
+import {Link} from "react-router-dom";
 
 const SingleDay = () => {
   const { data } = useContext(WeatherContext);
-  const { main, wind } = data;
+  const { main, wind, day } = data;
 
   const img = `http://openweathermap.org/img/wn/10d@2x.png`;
 
   return (
     <>
-      <section className="d-flex jumbotron justify-content-around
-      align-items-center">
-        <img src={img} className="m-0" style={{ width: "25%" }} alt="weather icon" />
-        <p className="display-4 p-2 mr-3">Friday</p>
-        <p className="lead p-2 pl-5 font-weight-bold">{main.temp_max}<sup>o</sup>C</p>
-        <p className="lead  text-muted p-2">{main.temp_min}<sup>o</sup>C</p>
+      <section
+        className="d-flex jumbotron justify-content-around
+      align-items-center"
+      >
+        <img
+          src={img}
+          className="m-0"
+          style={{ width: "25%" }}
+          alt="weather icon"
+        />
+        <p className="display-4 p-2 mr-3">{day}</p>
+        <p className="lead p-2 pl-5 font-weight-bold">
+          {main.temp_max}
+          <sup>o</sup>C
+        </p>
+        <p className="lead  text-muted p-2">
+          {main.temp_min}
+          <sup>o</sup>C
+        </p>
       </section>
       <div className="d-flex flex-column">
         <section className="additional-info d-flex flex-row flex-wrap justify-content-between">
@@ -34,6 +49,9 @@ const SingleDay = () => {
           </small>
         </section>
       </div>
+      <Link to="/day/:id">
+        <Button className="mt-4">See Details</Button>
+      </Link>
     </>
   );
 };

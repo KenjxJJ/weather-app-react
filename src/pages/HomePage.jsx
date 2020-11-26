@@ -5,9 +5,14 @@ import SingleDay from "../components/SingleDay";
 import { WeatherContext } from "../context/WeatherContext";
 
 const HomePage = () => {
-  const { days } = useContext(WeatherContext);
-  
+  const { days, dispatch } = useContext(WeatherContext);
+
   const img = `http://openweathermap.org/img/wn/10d@2x.png`;
+
+  const selectDay = (ind) => {
+    // choose a day
+    dispatch({ type: "SELECT_DAY", payload: ind });
+  };
 
   return (
     <>
@@ -20,20 +25,16 @@ const HomePage = () => {
           <section className="d-flex text-center flex-nowrap justify-content-between">
             {days.map((day, index) => (
               <>
-                <Link>
-                  <div
-                    className="day-selected d-flex flex-column m-0 day-weather-data"
-                    onClick={() => alert(`Selected Day ${index}`)}
-                  >
-                    <img src={img} className="" alt="weather icon" />
-                    <span
-                      className="text-center font-weight-bold"
-                      key={`${index}+ 1`}
-                    >
-                      {day.charAt(0)}
-                    </span>
-                  </div>
-                </Link>
+                <div
+                  key={`${index}+ 1`}
+                  className="day-selected d-flex flex-column m-0 day-weather-data"
+                  onClick={() => selectDay(index)}
+                >
+                  <img src={img} className="" alt="weather icon" />
+                  <span className="text-center font-weight-bold">
+                    {day.charAt(0)}
+                  </span>
+                </div>
               </>
             ))}
           </section>
