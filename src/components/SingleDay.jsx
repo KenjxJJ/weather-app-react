@@ -6,7 +6,6 @@ import {Link} from "react-router-dom";
 const SingleDay = () => {
   const { data } = useContext(WeatherContext);
   const { main, wind, day, weather } = data[0];
-
   const img = `http://openweathermap.org/img/wn/10d@2x.png`;
 
   return (
