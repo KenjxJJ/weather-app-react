@@ -1,70 +1,82 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useReducer, useEffect, useState } from "react";
 
-const weatherData = [
-  {
-    day: "Thursday",
-    city: {
-      id: 1283240,
-      name: "Kathmandu",
-      findname: "KATHMANDU",
-      country: "NP",
-      coord: { lon: 85.316666, lat: 27.716667 },
-      zoom: 7,
-    },
-    time: 1489487389,
-    main: {
-      temp: 291.15,
-      pressure: 1017,
-      humidity: 45,
-      temp_min: 291.15,
-      temp_max: 291.15,
-    },
-    wind: { speed: 9.3, deg: 240, var_beg: 200, var_end: 270 },
-    clouds: { all: 75 },
-    weather: [
-      {
-        id: 501,
-        main: "Rain",
-        description: "proximity moderate rain",
-        icon: "10d",
-      },
-    ],
-  },
-];
+const weatherData = [];
 
 const dayReducer = (state, action) => {
   switch (action.type) {
     case "SELECT_DAY":
-      // console.log({ ...state[0] });
+      console.log({ ...state[0] });
       const dayIndex = action.payload;
-      const fullDay = daysOfTheWeek[dayIndex];
-      return [{ ...state[0], day: fullDay }];
+      console.log(dayIndex);
+      const dayTime = state[0].daily[dayIndex].dt;
+      const fullDate = new Date(dayTime * 1000);
+      const fullDay = daysOfTheWeek[fullDate.getDay()];
+      console.log(fullDay);
+      state[0].daily = state[0].daily.map((data, index) => {
+        if (index === dayIndex) {
+          console.log("Same index");
+          console.log({ ...data, day: fullDay });
+          return { ...data, day: fullDay };
+        }
+        return data;
+      });
+      console.log("New state", state);
+      return state;
 
+    case "DISPLAY_DATA":
+      console.log("New state Before", state);
+      return [{ ...state[0].daily[0], day: "Monday" }];
     default:
       return state;
   }
 };
 
 const daysOfTheWeek = [
+  "Sunday",
   "Monday",
   "Tuesday",
   "Wednesday",
   "Thursday",
   "Friday",
   "Saturday",
-  "Sunday",
 ];
+
+const getWeekDay = (date) => {
+  // Convert to milliseconds from Unix timestamps
+  const timeConversionToMills = date * 1000;
+  const dateConstructed = new Date(timeConversionToMills);
+  return daysOfTheWeek[dateConstructed.getDay()];
+};
+
 export const WeatherContext = createContext();
 
 const WeatherContextProvider = (props) => {
+  const API_KEY = "f6be6c76f1e6cd2e2d8b976ca21506d8";
+  // const CITY_NAME = "London";
+  const API_URL = `https://api.openweathermap.org/data/2.5/onecall?lat=33.441792&lon=-94.037689&exclude=hourly,minutely,alerts&appid=${API_KEY}`;
+  const [isLoaded, setIsLoaded] = useState(false);
   const [weatherDataObtained, dispatch] = useReducer(dayReducer, weatherData);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await fetch(API_URL).then((res) => {
+        return res.json();
+      });
+
+      weatherData.push(data);
+      setIsLoaded(true);
+      // console.log(weatherData);
+    }
+    fetchData();
+  }, [API_URL]);
 
   return (
     <WeatherContext.Provider
       value={{
         data: weatherDataObtained,
-        days: daysOfTheWeek,
+        getWeekDay: getWeekDay,
         dispatch: dispatch,
+        isLoaded: isLoaded,
       }}
     >
       {props.children}
