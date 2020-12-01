@@ -7,7 +7,7 @@ const HomePage = () => {
   const { data, dispatch, isLoaded, getWeekDay } = useContext(WeatherContext);
   const [dayIndex, setDayIndex] = useState(0);
 
-  if (data[0] !== undefined ) {
+  if (data[0] !== undefined) {
     var { daily } = data[0];
   }
 
@@ -16,43 +16,62 @@ const HomePage = () => {
     dispatch({ type: "SELECT_DAY", payload: ind });
     setDayIndex(ind);
   };
-  const displayShortDate = (d)=>{
+  const displayShortDate = (d) => {
     let dayShown = getWeekDay(d.dt);
-      return dayShown.charAt(0)
-  }
+    return dayShown.slice(0, 3);
+  };
 
-   return (
+  return (
     <>
       {!isLoaded ? (
-        <main className="pl-3 m-5 display-4">Still loading...</main>
+        <div
+          className="m-5 p-5 
+          spinner-border text-info"
+          role="status"
+        >
+          <span class="sr-only">Still loading...</span>
+        </div>
       ) : (
         <>
           <main>
             <div className="d-flex flex-column">
               <section className="jumbotron">
                 <p className="lead">Weekly Chart</p>
-                <SingleDay dayIndex = {dayIndex}/>
+                <SingleDay dayIndex={dayIndex} />
               </section>
-              <section className="d-flex text-center flex-nowrap justify-content-between">
+              <section className="d-flex text-center flex-nowrap my-5 px-1 overflow-x-scroll justify-content-between align-items-center">
                 {daily.map((d, index) => (
                   <>
                     <div
-                      key={`${index}+ 1`}
-                      className="day-selected d-flex flex-column m-0 day-weather-data"
+                      key={`${d.weather[0].id}+${index}`}
+                      className="day-selected d-flex flex-column"
                       onClick={() => selectDay(index)}
                     >
-                      <img
-                        key={`image${index}`}
-                        src={`http://openweathermap.org/img/wn/${d.weather[0].icon}@2x.png`}
-                        className=""
-                        alt="weather icon"
-                      />
                       <span
-                        key={`day${index}`}
-                        className="text-center font-weight-bold"
+                        key={`day${index + 1}`}
+                        className="lead font-weight-bold"
                       >
                         {displayShortDate(d)}
                       </span>
+                      <img
+                        key={`image${index + 2}`}
+                        src={`http://openweathermap.org/img/wn/${d.weather[0].icon}@2x.png`}
+                        className="w-100"
+                        alt="weather icon"
+                      />
+                      <small
+                        key={index}
+                        className="d-flex justify-content-center"
+                      >
+                        <span className="pr-2 font-weight-bold">
+                          {d.temp.max}
+                          <sup>o</sup>
+                        </span>
+                        <span>
+                          {d.temp.min}
+                          <sup>o</sup>
+                        </span>
+                      </small>
                     </div>
                   </>
                 ))}

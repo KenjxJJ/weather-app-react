@@ -5,24 +5,14 @@ const FullSingleDayCast = (route) => {
   // Obtain value of the id
   const weatherDayIndex = route.match.params.id;
   const { data, getWeekDay } = useContext(WeatherContext);
-  const [isDoneLoading, setisDoneLoading] = useState(false);
-  const [selectedDayData, setSelectedDayData] = useState({
-    dt: null,
-    temp: {},
-    wind_speed: "",
-    weather: [],
-    uvi: "",
-    pressure: "",
-    humidity: "",
-  });
+  const [isDoneLoading, setIsDoneLoading] = useState(false);
+  const [selectedDayData, setSelectedDayData] = useState({});
 
   useEffect(() => {
     const { daily } = data[0];
-    console.log("DAily", daily);
     const selectedDayData = daily[parseInt(weatherDayIndex)];
     setSelectedDayData(selectedDayData);
-    setisDoneLoading(true);
-    console.log("SelectDT", selectedDayData);
+    setIsDoneLoading(true);
   }, [data, weatherDayIndex]);
 
   //   Convert time(in milliseconds) to hh:mm
@@ -148,7 +138,13 @@ const FullSingleDayCast = (route) => {
           </section>
         </>
       ) : (
-        <main className="pl-4 display-4">Still loading...</main>
+        <div
+          className="m-5 p-5 
+          spinner-border text-info"
+          role="status"
+        >
+          <span class="sr-only">Still loading...</span>
+        </div>
       )}
     </>
   );
