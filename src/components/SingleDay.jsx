@@ -52,11 +52,11 @@ const SingleDay = ({dayIndex}) => {
             {humidity}%
           </small>
           <small className="lead w-50 d-flex justify-content-between pr-3">
-            <span className="font-weight-bold">Pressure</span> {pressure} Pa
+            <span className="font-weight-bold">Pressure</span> {pressure} hPa
           </small>
         </section>
       </div>
-      <Link to={`/day/${weather[0].id}`}>
+      <Link to={`/day/${index}`}>
         <Button className="mt-4">See Details</Button>
       </Link>
     </>

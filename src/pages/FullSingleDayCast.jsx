@@ -1,40 +1,29 @@
 import React, { useContext, useState, useEffect } from "react";
 import { WeatherContext } from "../context/WeatherContext";
 
-import {
-  TabContent,
-  TabPane,
-  Nav,
-  NavItem,
-  NavLink,
-  Row,
-  Col,
-} from "reactstrap";
-
-import classnames from "classnames";
-
 const FullSingleDayCast = (route) => {
-  const { data } = useContext(WeatherContext);
-//   const { main, wind, city, time } = data;
-
+  // Obtain value of the id
+  const weatherDayIndex = route.match.params.id;
+  const { data, getWeekDay } = useContext(WeatherContext);
+  const [isDoneLoading, setisDoneLoading] = useState(false);
   const [selectedDayData, setSelectedDayData] = useState({
-    weather: {
-      id: null,
-    },
-    city: {},
-    main: {},
-    wind: {},
+    dt: null,
+    temp: {},
+    wind_speed: "",
+    weather: [],
+    uvi: "",
+    pressure: "",
+    humidity: "",
   });
 
-  // Obtain value of the id
-  const weatherIndex = route.match.params.id;
-
   useEffect(() => {
-    const selectedDayData = data.find(
-      (wData) => wData.weather[0].id === parseInt(weatherIndex)
-    );
+    const { daily } = data[0];
+    console.log("DAily", daily);
+    const selectedDayData = daily[parseInt(weatherDayIndex)];
     setSelectedDayData(selectedDayData);
-  }, [data, weatherIndex]);
+    setisDoneLoading(true);
+    console.log("SelectDT", selectedDayData);
+  }, [data, weatherDayIndex]);
 
   //   Convert time(in milliseconds) to hh:mm
   const msToTime = (duration) => {
@@ -47,96 +36,120 @@ const FullSingleDayCast = (route) => {
     return hours + ":" + minutes;
   };
 
-  // For tabs
-  const [activeTab, setActiveTab] = useState("1");
-
-  const toggle = (tab) => {
-    if (activeTab !== tab) setActiveTab(tab);
-  };
-  const weatherIcon = `http://openweathermap.org/img/wn/10d@2x.png`;
   return (
     <>
-      <section
-        className="d-flex flex-column jumbotron justify-content-around
+      {isDoneLoading ? (
+        <>
+          <section
+            className="d-flex flex-column jumbotron justify-content-around
       align-items-center"
-      >
-        <img
-          className="m-0 weather-icon"
-          src={weatherIcon}
-          alt="weather icon"
-        />
-        <p className="display-4">
-          {selectedDayData.main.temp_max} <sup>o</sup>C
-        </p>
-        <p className="lead">{selectedDayData.city.name}</p>
+          >
+            <div className="d-flex w-100 flex-row nowrap justify-content-between  align-items-center">
+              <p className="display-4">{getWeekDay(selectedDayData.dt)}</p>
+              <p className="font-weight-bold lead">
+                {msToTime(selectedDayData.dt)}
+              </p>
+            </div>
+            <img
+              className="m-0 weather-icon"
+              src={`http://openweathermap.org/img/wn/${selectedDayData.weather[0].icon}@2x.png`}
+              alt="weather icon"
+            />
+            <p className="display-4">
+              {selectedDayData.temp.max} <sup>o</sup>C
+            </p>
+            {/* <p className="lead">{city.name}</p> */}
+            <p className="lead">
+              {data[0].lat},{data[0].lon}
+            </p>
+            <small className="font-italic">( latitude, longitude ) </small>
 
-        {/* //Tabs */}
-        <Nav tabs>
-          <NavItem>
-            <NavLink
-              className={classnames({ active: activeTab === "1" })}
-              onClick={() => {
-                toggle("1");
-              }}
-            >
-              Today
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={classnames({ active: activeTab === "2" })}
-              onClick={() => {
-                toggle("2");
-              }}
-            >
-              Tomorrow
-            </NavLink>
-          </NavItem>
-        </Nav>
-        <TabContent activeTab={activeTab}>
-          <TabPane tabId="1">
-            <Row>
-              <Col sm="12">
-                <section className="p-3 text-center">
-                  <p>{msToTime(selectedDayData.time)}</p>
-                  <p>
-                    <img className="" src={weatherIcon} alt="weather icon" />
-                  </p>
-                  <p>{selectedDayData.main.temp_max}</p>
-                </section>
-              </Col>
-            </Row>
-          </TabPane>
-          <TabPane tabId="2">
-            <Row>
-              <Col sm="12">
-                <section className="p-3 text-center weather-info-card">
-                  <p>{msToTime(selectedDayData.time)}</p>
-                  <p>
-                    <img className="" src={weatherIcon} alt="weather icon" />
-                  </p>
-                  <p>{selectedDayData.main.temp_max}</p>
-                </section>
-              </Col>
-            </Row>
-          </TabPane>
-        </TabContent>
-      </section>
-      <section className="additional-info d-flex flex-row flex-wrap justify-content-between">
-        <small className="lead w-50 d-flex justify-content-between pr-3">
-          <span className="font-weight-bold">Wind</span> {selectedDayData.wind.speed} m/s
-        </small>
-        <small className="lead w-50 d-flex justify-content-between pr-3">
-          <span className="font-weight-bold">Visibility</span> {selectedDayData.main.pressure}
-        </small>
-        <small className="lead w-50 d-flex justify-content-between pr-3">
-          <span className="font-weight-bold">Humidity</span>
-          {selectedDayData.main.humidity}%
-        </small>
-        <small className="lead w-50 d-flex justify-content-between pr-3">
-          <span className="font-weight-bold">Pressure</span> {selectedDayData.main.pressure} Pa
-        </small>
-      </section>
+            <section className="w-75 d-flex flex-column">
+              <small className="lead w-100 d-flex justify-content-between pr-3">
+                Description :
+                <span className="pl-2">
+                  {selectedDayData.weather[0].description}
+                </span>{" "}
+              </small>
+              <div className="d-flex  flex-row nowrap justify-content-between">
+                <small className="lead w-50 d-flex justify-content-between pr-3">
+                  Max. Temp :
+                  <span className="pl-2">
+                    {selectedDayData.temp.max}<sup>o</sup>C{" "}
+                  </span>{" "}
+                </small>
+                <small className="lead w-50 d-flex justify-content-between pr-3">
+                  Min. Temp :
+                  <span className="pl-2">
+                    {selectedDayData.temp.min}<sup>o</sup>C{" "}
+                  </span>{" "}
+                </small>
+              </div>
+              <div className="d-flex w-100 flex-row nowrap justify-content-between">
+                <small className="lead w-50 d-flex justify-content-between pr-3">
+                  Sunrise:
+                  <span className="pl-2">
+                    {msToTime(selectedDayData.sunrise)}{" "}
+                  </span>{" "}
+                </small>
+                <small className="lead w-50 d-flex justify-content-between pr-3">
+                  Sunset:
+                  <span className="pl-2">
+                    {msToTime(selectedDayData.sunset)}{" "}
+                  </span>{" "}
+                </small>
+              </div>
+              <small className="lead w-100 d-flex justify-content-between pr-3">
+                Rain :
+                <span className="pl-2">
+                  {selectedDayData.rain} mm
+                </span>{" "}
+              </small>
+            </section>
+          </section>
+          <section className="additional-info d-flex flex-row flex-wrap justify-content-between p-3">
+            <small className="lead w-50 d-flex justify-content-between pr-3">
+              <span className="font-weight-bold">Wind (Speed)</span>{" "}
+              {selectedDayData.wind_speed} m/s
+            </small>
+            <small className="lead w-50 d-flex justify-content-between pr-3">
+              <span className="font-weight-bold">UVI</span>{" "}
+              {selectedDayData.uvi}
+            </small>
+            <small className="lead w-50 d-flex justify-content-between pr-3">
+              <span className="font-weight-bold">Humidity</span>
+              {selectedDayData.humidity}%
+            </small>
+            <small className="lead w-50 d-flex justify-content-between pr-3">
+              <span className="font-weight-bold">Pressure</span>{" "}
+              {selectedDayData.pressure} hPa
+            </small>
+          </section>
+
+          <section className="additional-info mt-5 d-flex flex-row flex-wrap justify-content-between p-3 mb-5">
+            <small className="lead w-50 d-flex justify-content-between pr-3">
+              <span className="font-weight-bold">Dew Point</span>{" "}
+              {selectedDayData.dew_point} K
+            </small>
+            <small className="lead w-50 d-flex justify-content-between pr-3">
+              <span className="font-weight-bold">Clouds</span>{" "}
+              {selectedDayData.clouds} %
+            </small>{" "}
+            <small className="lead w-50 d-flex justify-content-between pr-3">
+              <span className="font-weight-bold">Pop</span>
+              {selectedDayData.pop}
+            </small>
+            <small className="lead w-50 d-flex justify-content-between pr-3">
+              <span className="font-weight-bold">
+                Wind (Direction) <sup>o</sup>
+              </span>{" "}
+              {selectedDayData.wind_deg}
+            </small>
+          </section>
+        </>
+      ) : (
+        <main className="pl-4 display-4">Still loading...</main>
+      )}
     </>
   );
 };

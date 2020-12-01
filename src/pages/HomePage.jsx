@@ -24,14 +24,14 @@ const HomePage = () => {
    return (
     <>
       {!isLoaded ? (
-        <main>Still loading...</main>
+        <main className="pl-3 m-5 display-4">Still loading...</main>
       ) : (
         <>
           <main>
             <div className="d-flex flex-column">
               <section className="jumbotron">
                 <p className="lead">Weekly Chart</p>
-                <SingleDay  dayIndex = {dayIndex}/>
+                <SingleDay dayIndex = {dayIndex}/>
               </section>
               <section className="d-flex text-center flex-nowrap justify-content-between">
                 {daily.map((d, index) => (
