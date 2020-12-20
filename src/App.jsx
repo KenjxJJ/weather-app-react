@@ -20,8 +20,8 @@ const App = () => {
             <Route path="/" exact component={HomePage} />
             <Route path="/day/:id" component={FullSingleDayCast} />
           </Switch>
-          <Footer />
         </Router>
+        <Footer />
       </WeatherContextProvider>
     </>
   );

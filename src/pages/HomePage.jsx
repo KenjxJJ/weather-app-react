@@ -4,39 +4,74 @@ import SingleDay from "../components/SingleDay";
 import { WeatherContext } from "../context/WeatherContext";
 
 const HomePage = () => {
-  const { data, dispatch, isLoaded, getWeekDay } = useContext(WeatherContext);
+  const {
+    data,
+    dispatch,
+    isLoaded,
+    setIsLoaded,
+    getWeekDay,
+    setLocation,
+    location,
+  } = useContext(WeatherContext);
   const [dayIndex, setDayIndex] = useState(0);
 
-  if (data[0] !== undefined) {
-    var { daily } = data[0];
-  }
+  console.log(data);
 
   const selectDay = (ind) => {
     // choose a day by its dt property
     dispatch({ type: "SELECT_DAY", payload: ind });
     setDayIndex(ind);
   };
-  const displayShortDate = (d) => {
+
+  function displayShortDate(d) {
     let dayShown = getWeekDay(d.dt);
     return dayShown.slice(0, 3);
+  }
+
+  const searchLocation = (e) => {
+    e.preventDefault();
+    console.log(location);
+    setIsLoaded(false);
+    dispatch({ type: "SEARCH_LOCATION", payload: location });
+    setIsLoaded(true);
   };
 
-  return (
-    <>
-      {!isLoaded ? (
-        <div
-          className="m-5 p-5 
-          spinner-border text-info"
-          role="status"
-        >
-          <span class="sr-only">Still loading...</span>
-        </div>
-      ) : (
+  if(isLoaded === true ){
+  if( data !== null && data !== undefined) {
+    if (data.length !== undefined && data.length > 0) {
+      // console.log("Now not null");
+      // console.log(data.length === undefined);
+      // console.log(
+      //   data !== null && (data.length !== 0 || data.length === undefined)
+      // );
+      const { daily } = data[0];
+
+      return (
         <>
-          <main>
+          <main className="mt-3">
             <div className="d-flex flex-column">
-              <section className="jumbotron">
-                <p className="lead">Weekly Chart</p>
+              <section className="single-day pl-4 pr-4">
+                <header className="d-flex align-items-center justify-content-between">
+                  <p className="lead">Weekly Chart</p>
+                  <form
+                    className="w-75 d-flex justify-content-end"
+                    onSubmit={searchLocation}
+                  >
+                    <input
+                      className="form-control w-50 pt-2 pb-3 m-0 rounded-0"
+                      type="text"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      placeholder="Enter a location"
+                    />
+                    <button
+                      className="btn btn-info rounded-0 pt-0 pl-4 pr-4 pb-0"
+                      type="submit"
+                    >
+                      Search
+                    </button>
+                  </form>
+                </header>
                 <SingleDay dayIndex={dayIndex} />
               </section>
               <section className="d-flex text-center flex-nowrap my-5 px-1 overflow-x-scroll justify-content-between align-items-center">
@@ -79,9 +114,28 @@ const HomePage = () => {
             </div>
           </main>
         </>
-      )}
-    </>
-  );
+      );
+    }
+    return (
+      <>
+      <h1>No Data...</h1>
+      </>
+    )
+  } 
+}else {
+    return (
+      <>
+        {
+          <div
+            className="m-5 p-5 
+       spinner-border text-info h-100"
+            role="status"
+          >
+            <span className="sr-only">Still loading...</span>
+          </div>
+        }
+      </>
+    );
+  }
 };
-
 export default HomePage;

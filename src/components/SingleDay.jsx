@@ -20,7 +20,7 @@ const SingleDay = ({dayIndex}) => {
   return (
     <>
       <section
-        className="d-flex jumbotron justify-content-around
+        className="d-flex single-day justify-content-around
       align-items-center"
       >
         <img
@@ -39,7 +39,7 @@ const SingleDay = ({dayIndex}) => {
           <sup>o</sup>C
         </p>
       </section>
-      <div className="d-flex flex-column">
+      <div className="d-flex flex-column mt-0">
         <section className="additional-info d-flex flex-row flex-wrap justify-content-between">
           <small className="lead w-50 d-flex justify-content-between pr-3">
             <span className="font-weight-bold">Wind</span> {wind_speed} m/s
