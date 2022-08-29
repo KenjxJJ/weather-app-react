@@ -101,11 +101,7 @@ const WeatherContextProvider = (props) => {
 
   const API_KEY_OPEN_QUEST = "l6zWeFrIZ5OmRFbrNVXrs8tD7ZvqwM24";
   const [location, setLocation] = useState("Kampala");
-  const [
-    url,
-    setUrl,
-  ] = useState(`https://www.mapquestapi.com/geocoding/v1/address?key=${API_KEY_OPEN_QUEST}&inFormat=kvp&outFormat=json&location=${location}
-  &thumbMaps=false`);
+  const url = `https://www.mapquestapi.com/geocoding/v1/address?key=${API_KEY_OPEN_QUEST}&inFormat=kvp&outFormat=json&location=${location}&thumbMaps=false`;
 
   const [latitude, setLatitude] = useState(0.3476);
   const [longitude, setLongitude] = useState(32.5825);
